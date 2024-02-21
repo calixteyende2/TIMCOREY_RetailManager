@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using TRMWPFUserInterface.Helpers;
 using TRMWPFUserInterface.ViewModels;
 
 namespace TRMWPFUserInterface
@@ -14,7 +16,13 @@ namespace TRMWPFUserInterface
         private SimpleContainer _container = new SimpleContainer();
         public Bootstrapper()
         {
-                Initialize();
+            Initialize();
+
+            ConventionManager.AddElementConvention<PasswordBox>(
+            PasswordBoxHelper.BoundPasswordProperty,
+            "Password",
+            "PasswordChanged");
+
         }
 
         protected override void OnStartup(object sender, StartupEventArgs e)
@@ -26,8 +34,11 @@ namespace TRMWPFUserInterface
         {
             _container.Instance(_container);
 
-            _container.Singleton<IWindowManager, WindowManager>()
-                      .Singleton<IEventAggregator, EventAggregator>();
+            _container
+                .Singleton<IWindowManager, WindowManager>()
+                .Singleton<IEventAggregator, EventAggregator>()
+                .Singleton<IAPIHelper, APIHelper>();
+                
 
             GetType().Assembly.GetTypes()
                 .Where(type => type.IsClass)

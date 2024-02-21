@@ -5,8 +5,22 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TRMWPFUserInterface.Views"
         mc:Ignorable="d"
-        Title="ShellView" Height="450" Width="800">
+        Title="ShellView" 
+        Height="450" 
+        Width="800">
     <Grid>
-        
+        <DockPanel>
+            <Menu DockPanel.Dock="Top" FontSize="18">
+                <MenuItem Header="_File">
+                    
+                </MenuItem>
+                <MenuItem Header="_Acoount">
+                    <MenuItem x:Name="LoginScreen" Header="_Login"/>
+                </MenuItem>
+            </Menu>
+            <Grid>
+                <ContentControl x:Name="ActiveItem" Margin="5"/>
+            </Grid>
+        </DockPanel>
     </Grid>
 </Window>
