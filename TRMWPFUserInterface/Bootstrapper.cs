@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using TRMWPFUserInterface.Helpers;
+using TRMWPFUserInterface.Library;
 using TRMWPFUserInterface.ViewModels;
 
 namespace TRMWPFUserInterface
@@ -37,6 +38,7 @@ namespace TRMWPFUserInterface
             _container
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
+                .Singleton<ILogInUserModel, LogInUserModel>()
                 .Singleton<IAPIHelper, APIHelper>();
                 
 

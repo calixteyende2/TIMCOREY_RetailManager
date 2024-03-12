@@ -41,7 +41,37 @@ namespace TRMWPFUserInterface.ViewModels
             }
 		}
 
-        public bool CanLogin
+		private bool _isErrorVisible;
+
+		public bool IsErrorVisible
+        {
+			get 
+			{
+				bool output = false;
+				if (!string.IsNullOrEmpty(ErrorMessage)) 
+				{
+					output = true;
+				}
+				return output;
+			}
+		}
+
+		private string _errorMessage;
+
+		public string ErrorMessage
+        {
+			get { return _errorMessage; }
+			set 
+			{ 
+				_errorMessage = value; 
+				NotifyOfPropertyChange(() => ErrorMessage);
+				NotifyOfPropertyChange(() => IsErrorVisible);
+			}
+		}
+
+
+
+		public bool CanLogin
         {
             get
             {
@@ -53,11 +83,16 @@ namespace TRMWPFUserInterface.ViewModels
 		{
 			try
 			{
+				ErrorMessage = string.Empty;
                 var result = await _apiHelper.Authenticate(UserName, Password);
-            }
+
+				//Capture more information about the user
+				await _apiHelper.GetLoggedInUserInfo(result.access_token);
+
+			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.Message);
+				ErrorMessage = ex.Message;
 			}
 			
 		}
