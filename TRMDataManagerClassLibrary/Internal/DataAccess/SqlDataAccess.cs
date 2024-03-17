@@ -23,7 +23,7 @@ namespace TRMDataManager.Library.Internal.DataAccess
 
             //string connectionString = "Server=DESKTOP-H1OSQC9\\MSSQLSERVER2; Database=TRMDataBase; Trusted_Connection=True";
             
-                using (IDbConnection connection = new SqlConnection())
+            using (IDbConnection connection = new SqlConnection())
             {
                 connection.ConnectionString = connectionString;
                 //connection.Open();

@@ -6,18 +6,16 @@ using System.Threading.Tasks;
 using TRMDataManager.Library.Internal.DataAccess;
 using TRMDataManagerClassLibrary.Models;
 
-namespace TRMDataManager.Library.DataAccess
+namespace TRMDataManagerClassLibrary.DataAccess
 {
-    public class UserData
+    public class ProductDataAccess
     {
-        public List<UserModel> GetUserById(string Id)
+        public List<ProductModel> GetProducts()
         {
             SqlDataAccess sql = new SqlDataAccess();
 
-            var p = new {Id = Id};
+            var output = sql.LoadData<ProductModel, dynamic>("dbo.spProduct_GetAll", new { }, "TRMDataBase");
 
-            var output =  sql.LoadData<UserModel, dynamic>("dbo.spUserLookup", p, "TRMDataBase");
-       
             return output;
         }
     }

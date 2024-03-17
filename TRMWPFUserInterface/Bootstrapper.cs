@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using TRMWPFUserInterface.Helpers;
 using TRMWPFUserInterface.Library;
+using TRMWPFUserInterface.Library.Api;
 using TRMWPFUserInterface.ViewModels;
 
 namespace TRMWPFUserInterface
@@ -28,12 +29,13 @@ namespace TRMWPFUserInterface
 
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
-            DisplayRootViewForAsync<ShellViewModel>();
+            DisplayRootViewForAsync<ShellViewModel>();           
         }
 
         protected override void Configure()
         {
-            _container.Instance(_container);
+            _container.Instance(_container)
+                      .PerRequest<IProductEnpoint, ProductEnpoint>();
 
             _container
                 .Singleton<IWindowManager, WindowManager>()

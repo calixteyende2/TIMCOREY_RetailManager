@@ -5,14 +5,34 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TRMWPFUserInterface.Library.Api;
+using TRMWPFUserInterface.Library.Models;
 
 namespace TRMWPFUserInterface.ViewModels
 {
     public class SalesViewModel : Screen
     {
-		private BindingList<string>	 _products;
+        private IProductEnpoint _productEnpoint;
 
-		public BindingList<string> Products
+        public SalesViewModel(IProductEnpoint productEnpoint)
+        {
+            _productEnpoint = productEnpoint;
+        }
+
+        protected override async void OnViewLoaded(object view)
+        {
+            base.OnViewLoaded(view);
+            await LoadProducts();
+        }
+
+        private async Task LoadProducts()
+        {
+            var productList = await _productEnpoint.GetAll();
+            Products = new BindingList<ProductModel>(productList);
+        }
+
+        private BindingList<ProductModel> _products;
+        public BindingList<ProductModel> Products
 		{
 			get { return _products; }
 			set 
@@ -22,9 +42,20 @@ namespace TRMWPFUserInterface.ViewModels
             }
 		}
 
-        private BindingList<string> _cart;
+        private ProductModel _selectedProduct;
+        public ProductModel SelectedProduct
+        {
+            get => _selectedProduct;
+            set
+            {
+                _selectedProduct = value;
+                NotifyOfPropertyChange(() => SelectedProduct);
+                NotifyOfPropertyChange(() => CanAddToCart);
+            }
+        }
 
-        public BindingList<string> Cart
+        private BindingList<CartItemModel> _cart = new BindingList<CartItemModel>();
+        public BindingList<CartItemModel> Cart
         {
             get { return _cart; }
             set 
@@ -35,15 +66,15 @@ namespace TRMWPFUserInterface.ViewModels
         }
 
 
-        private string _itemQuantity;
-
-		public string ItemQuantity
+        private int _itemQuantity = 1;
+		public int ItemQuantity
 		{
 			get { return _itemQuantity; }
 			set 
 			{ 
 				_itemQuantity = value; 
-				NotifyOfPropertyChange(() => Products);
+				NotifyOfPropertyChange(() => ItemQuantity);
+                NotifyOfPropertyChange(() => CanAddToCart);
 			}
 		}
         
@@ -51,8 +82,13 @@ namespace TRMWPFUserInterface.ViewModels
         {
             get 
             { 
-                //TODO - Replace with calculation
-                return "$0.00"; 
+                decimal subTotal = 0;
+
+                foreach (var item in Cart)
+                {
+                    subTotal += item.Product.RetailPrice*item.QuantityInCart;
+                }
+                return subTotal.ToString("c"); 
             }
         }
 
@@ -82,16 +118,38 @@ namespace TRMWPFUserInterface.ViewModels
                 bool canAddToCart = false;
                 
                 //Make sure something is selected
+                if(ItemQuantity >0 && SelectedProduct?.QuantityInStock >= ItemQuantity)
+                {
+                    canAddToCart = true;
+                }
 
                 return canAddToCart;
             }
         }
 
-        public async Task AddToCart()
+        public void AddToCart()
         {
             try
             {
-               
+                CartItemModel existingItem = Cart.FirstOrDefault(X => X.Product == SelectedProduct);
+                if (existingItem != null)
+                {
+                    existingItem.QuantityInCart += ItemQuantity;
+                    Cart.Remove(existingItem);
+                    Cart.Add(existingItem);
+                }
+                else
+                {
+                    CartItemModel item = new CartItemModel()
+                    {
+                        Product = SelectedProduct,
+                        QuantityInCart = ItemQuantity
+                    };
+                    Cart.Add(item);
+                }
+                SelectedProduct.QuantityInStock -= ItemQuantity;
+                ItemQuantity = 1;                
+                NotifyOfPropertyChange(() => SubTotal);
             }
             catch (Exception ex)
             {
@@ -112,11 +170,12 @@ namespace TRMWPFUserInterface.ViewModels
             }
         }
 
-        public async Task RemoveFromCart()
+        public void RemoveFromCart()
         {
             try
             {
 
+                NotifyOfPropertyChange(() => SubTotal);
             }
             catch (Exception ex)
             {
