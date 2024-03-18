@@ -6,17 +6,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TRMWPFUserInterface.Library.Api;
+using TRMWPFUserInterface.Library.Helpers;
 using TRMWPFUserInterface.Library.Models;
 
 namespace TRMWPFUserInterface.ViewModels
 {
     public class SalesViewModel : Screen
     {
-        private IProductEnpoint _productEnpoint;
+        IProductEnpoint _productEnpoint;
+        IConfigHelper _configHelper;
 
-        public SalesViewModel(IProductEnpoint productEnpoint)
+        public SalesViewModel(IProductEnpoint productEnpoint, IConfigHelper configHelper)
         {
             _productEnpoint = productEnpoint;
+            _configHelper = configHelper;
         }
 
         protected override async void OnViewLoaded(object view)
@@ -81,23 +84,43 @@ namespace TRMWPFUserInterface.ViewModels
         public string SubTotal
         {
             get 
-            { 
-                decimal subTotal = 0;
-
-                foreach (var item in Cart)
-                {
-                    subTotal += item.Product.RetailPrice*item.QuantityInCart;
-                }
-                return subTotal.ToString("c"); 
+            {
+                return CalculateSubTotal().ToString("c"); //"c" for currency
             }
         }
 
+        private decimal CalculateSubTotal()
+        {
+            decimal subTotal = 0;
+
+            foreach (var item in Cart)
+            {
+                subTotal += item.Product.RetailPrice * item.QuantityInCart;
+            }
+
+            return subTotal;
+        }
+
+        private decimal CalculateTax()
+        {
+            decimal taxAmount = 0;
+            decimal taxRate = _configHelper.GetTaxRate();
+
+            foreach (var item in Cart)
+            {
+                if (item.Product.IsTaxable)
+                {
+                    taxAmount += (item.Product.RetailPrice * item.QuantityInCart * (taxRate / 100));
+                }
+            }
+
+            return taxAmount;
+        }
         public string Tax
         {
             get
             {
-                //TODO - Replace with calculation
-                return "$0.00";
+                return CalculateTax().ToString("c");
             }
         }
 
@@ -105,8 +128,8 @@ namespace TRMWPFUserInterface.ViewModels
         {
             get
             {
-                //TODO - Replace with calculation
-                return "$0.00";
+                decimal total = CalculateTax() + CalculateSubTotal();
+                return total.ToString("c");
             }
         }
 
@@ -150,6 +173,8 @@ namespace TRMWPFUserInterface.ViewModels
                 SelectedProduct.QuantityInStock -= ItemQuantity;
                 ItemQuantity = 1;                
                 NotifyOfPropertyChange(() => SubTotal);
+                NotifyOfPropertyChange(() => Tax);
+                NotifyOfPropertyChange(() => Total);
             }
             catch (Exception ex)
             {
@@ -176,6 +201,8 @@ namespace TRMWPFUserInterface.ViewModels
             {
 
                 NotifyOfPropertyChange(() => SubTotal);
+                NotifyOfPropertyChange(() => Tax);
+                NotifyOfPropertyChange(() => Total);
             }
             catch (Exception ex)
             {

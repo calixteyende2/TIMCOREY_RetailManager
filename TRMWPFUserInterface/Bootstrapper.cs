@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using TRMWPFUserInterface.Helpers;
 using TRMWPFUserInterface.Library;
 using TRMWPFUserInterface.Library.Api;
+using TRMWPFUserInterface.Library.Helpers;
 using TRMWPFUserInterface.ViewModels;
 
 namespace TRMWPFUserInterface
@@ -41,6 +42,7 @@ namespace TRMWPFUserInterface
                 .Singleton<IWindowManager, WindowManager>()
                 .Singleton<IEventAggregator, EventAggregator>()
                 .Singleton<ILogInUserModel, LogInUserModel>()
+                .Singleton<IConfigHelper, ConfigHelper>()
                 .Singleton<IAPIHelper, APIHelper>();
                 
 
