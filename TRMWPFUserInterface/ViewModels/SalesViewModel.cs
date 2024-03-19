@@ -94,7 +94,7 @@ namespace TRMWPFUserInterface.ViewModels
         {
             decimal subTotal = 0;
 
-            subTotal = Cart.Sum(x=>x.Product.RetailPrice*x.Product.QuantityInStock);
+            subTotal = Cart.Sum(x=>x.Product.RetailPrice*x.QuantityInCart);
 
             //foreach (var item in Cart)
             //{
