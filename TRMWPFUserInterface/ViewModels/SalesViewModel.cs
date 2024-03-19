@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using TRMWPFUserInterface.Library.Api;
 using TRMWPFUserInterface.Library.Helpers;
 using TRMWPFUserInterface.Library.Models;
@@ -93,10 +94,12 @@ namespace TRMWPFUserInterface.ViewModels
         {
             decimal subTotal = 0;
 
-            foreach (var item in Cart)
-            {
-                subTotal += item.Product.RetailPrice * item.QuantityInCart;
-            }
+            subTotal = Cart.Sum(x=>x.Product.RetailPrice*x.Product.QuantityInStock);
+
+            //foreach (var item in Cart)
+            //{
+            //    subTotal += item.Product.RetailPrice * item.QuantityInCart;
+            //}
 
             return subTotal;
         }
@@ -104,15 +107,19 @@ namespace TRMWPFUserInterface.ViewModels
         private decimal CalculateTax()
         {
             decimal taxAmount = 0;
-            decimal taxRate = _configHelper.GetTaxRate();
+            decimal taxRate = _configHelper.GetTaxRate()/100;
 
-            foreach (var item in Cart)
-            {
-                if (item.Product.IsTaxable)
-                {
-                    taxAmount += (item.Product.RetailPrice * item.QuantityInCart * (taxRate / 100));
-                }
-            }
+            taxAmount = Cart
+                .Where(x => x.Product.IsTaxable)
+                .Sum(x => x.Product.RetailPrice * x.QuantityInCart * taxRate);
+
+            //foreach (var item in Cart)
+            //{
+            //    if (item.Product.IsTaxable)
+            //    {
+            //        taxAmount += (item.Product.RetailPrice * item.QuantityInCart * taxRate);
+            //    }
+            //}
 
             return taxAmount;
         }
