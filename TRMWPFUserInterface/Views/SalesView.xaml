@@ -11,6 +11,14 @@
              d:DesignWidth="800"
              Background="White"
              FontSize="24">
+    <UserControl.Resources>
+        <Style TargetType="ListBox">
+            <Style.Setters>
+                <Setter Property="FontSize" Value="14"/>
+            </Style.Setters>
+        </Style>
+    </UserControl.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -52,9 +60,20 @@
                  MinHeight="200"
                  MinWidth="180"
                  SelectedItem="{Binding SelectedProduct}">
+            
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding ProductName}"/>
+                    <StackPanel Orientation="Vertical" Margin="0 0 0 10">
+                        <TextBlock Text="{Binding ProductName}"/>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Price" Margin="0 0 5 0"/>
+                            <TextBlock Text="{Binding RetailPrice, StringFormat='{}{0:c}'}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" >
+                            <TextBlock Text="QTy In Stock" Margin="0 0 5 0"/>
+                            <TextBlock Text="{Binding QuantityInStock}"/>
+                        </StackPanel>
+                    </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
