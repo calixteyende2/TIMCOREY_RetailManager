@@ -21,7 +21,7 @@ namespace TRMDataManager.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+            : base("EF-TRMDataManager", throwIfV1Schema: false)
         {
         }
         
