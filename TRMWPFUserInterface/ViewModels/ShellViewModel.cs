@@ -13,16 +13,14 @@ namespace TRMWPFUserInterface.ViewModels
     {        
         private IEventAggregator _eventAggregator;
         private SalesViewModel _salesViewModel;
-        private SimpleContainer _container;
 
         [Obsolete]
-        public ShellViewModel(IEventAggregator eventAggregator, SalesViewModel salesViewModel, SimpleContainer container)
+        public ShellViewModel(IEventAggregator eventAggregator, SalesViewModel salesViewModel)
         {
             _eventAggregator = eventAggregator;
             _eventAggregator.Subscribe(this);
             _salesViewModel = salesViewModel;
-            _container = container;
-            ActivateItemAsync(_container.GetInstance<LoginViewModel>());
+            ActivateItemAsync(IoC.Get<LoginViewModel>());
         }
 
         public Task HandleAsync(LogOnEvent message, CancellationToken cancellationToken = default)
