@@ -10,8 +10,9 @@ using System.Threading.Tasks;
 
 namespace TRMDataManager.Library.Internal.DataAccess
 {
+    //Etape 5: Communication avec la base de données TRMDataBase
     internal class SqlDataAccess
-    {
+    {               
         public string GetConnectionString(string name)
         {
             return ConfigurationManager.ConnectionStrings[name].ConnectionString;
@@ -21,8 +22,6 @@ namespace TRMDataManager.Library.Internal.DataAccess
         {
             string connectionString = GetConnectionString(connectionStringName);
 
-            //string connectionString = "Server=DESKTOP-H1OSQC9\\MSSQLSERVER2; Database=TRMDataBase; Trusted_Connection=True";
-            
             using (IDbConnection connection = new SqlConnection())
             {
                 connection.ConnectionString = connectionString;
@@ -40,6 +39,7 @@ namespace TRMDataManager.Library.Internal.DataAccess
 
             using (IDbConnection connection = new SqlConnection())
             {
+                connection.ConnectionString = connectionString;
                 connection.Execute(storedProcedure, parameters,
                     commandType: CommandType.StoredProcedure);
 

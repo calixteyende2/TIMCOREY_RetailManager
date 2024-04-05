@@ -11,14 +11,14 @@ using TRMWPFUserInterface.Models;
 
 namespace TRMWPFUserInterface.Library.Api
 {
-    public class ProductEnpoint : IProductEnpoint
+    public class ProductEndpoint : IProductEnpoint
     {
         private IAPIHelper _apiHelper;
-        public ProductEnpoint(IAPIHelper apiHelper)
+        public ProductEndpoint(IAPIHelper apiHelper)
         {
             _apiHelper = apiHelper;
         }
-
+                                              //Etape 2
         public async Task<IList<ProductModel>> GetAll()
         {
             using (HttpResponseMessage responseMessage = await _apiHelper.APIClient.GetAsync("api/Product/GetAll"))

@@ -5,15 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TRMWPFUserInterface.Library.Helpers
+namespace TRMDataManagerClassLibrary
 {
-    //TODO: To be Move from this config to the API
-    public class ConfigHelper : IConfigHelper
+    public class ConfigHelper 
     {
-        public decimal GetTaxRate()
+        public static decimal GetTaxRate()
         {
             string rateText = ConfigurationManager.AppSettings["taxRate"];
-            
+
             bool IsValidTaxRate = Decimal.TryParse(rateText, out decimal output);
             if (IsValidTaxRate == false)
             {

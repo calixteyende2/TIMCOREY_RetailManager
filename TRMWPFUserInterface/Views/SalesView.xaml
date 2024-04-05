@@ -18,7 +18,7 @@
             </Style.Setters>
         </Style>
     </UserControl.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
@@ -43,24 +43,24 @@
 
         <!-- Header -->
         <TextBlock Text="Sales Page"
-                   FontSize="48"
-                   Grid.Row="0"
-                   Grid.Column="1"
-                   Grid.ColumnSpan="3"
-                   HorizontalAlignment="Center"/>
+                           FontSize="48"
+                           Grid.Row="0"
+                           Grid.Column="1"
+                           Grid.ColumnSpan="3"
+                           HorizontalAlignment="Center"/>
 
 
         <!-- Column 1 -->
         <TextBlock Grid.Row="1"
-                   Grid.Column="1"
-                   Text="Items"/>
+                           Grid.Column="1"
+                           Text="Items"/>
         <ListBox x:Name="Products" 
-                 Grid.Row="2"
-                 Grid.Column="1"
-                 MinHeight="200"
-                 MinWidth="180"
-                 SelectedItem="{Binding SelectedProduct}">
-            
+                         Grid.Row="2"
+                         Grid.Column="1"
+                         MinHeight="200"
+                         MinWidth="180"
+                         SelectedItem="{Binding SelectedProduct}">
+
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Vertical" Margin="0 0 0 10">
@@ -77,35 +77,35 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        
+
         <!-- Column 2 -->
         <StackPanel Orientation="Vertical"
-                    Grid.Row="2"
-                    Grid.Column="2"
-                    Margin="20 0">
+                            Grid.Row="2"
+                            Grid.Column="2"
+                            Margin="20 0">
             <TextBlock Text="Quantity"
-                       HorizontalAlignment="Center"/>
+                               HorizontalAlignment="Center"/>
             <TextBox x:Name="ItemQuantity"
-                     MinWidth="100"
-                     Margin="0 0 0 10"/>
+                             MinWidth="100"
+                             Margin="0 0 0 10"/>
             <Button x:Name="AddToCart"
-                    Content="Add to Cart"
-                    Margin="0 0 0 30"
-                    Padding="5"/>
+                            Content="Add to Cart"
+                            Margin="0 0 0 30"
+                            Padding="5"/>
             <Button x:Name="RemoveFromCart" 
-                    Content="Remove from Cart"
-                    Padding="5"/>
+                            Content="Remove from Cart"
+                            Padding="5"/>
         </StackPanel>
 
         <!-- Column 3-->
         <TextBlock Grid.Row="1"
-                   Grid.Column="3"
-                   Text="Cart"/>
+                           Grid.Column="3"
+                           Text="Cart"/>
         <ListBox x:Name="Cart" 
-                 Grid.Row="2"
-                 Grid.Column="3"
-                 MinHeight="200"
-                 MinWidth="180">
+                         Grid.Row="2"
+                         Grid.Column="3"
+                         MinHeight="200"
+                         MinWidth="180">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding DisplayText}"/>
@@ -113,40 +113,39 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-            <DockPanel  Grid.Row="3"
-                    Grid.Column="3"
-                    Margin="0 0 0 10">
+        <DockPanel  Grid.Row="3"
+                            Grid.Column="3"
+                            Margin="0 0 0 10">
             <TextBlock Text="SubTotal: "
-                       Margin="0 0 15 0"/>
+                               Margin="0 0 15 0"/>
             <TextBlock x:Name="SubTotal"
-                   Text="$0.00"
-                   TextAlignment="Right"/>
+                           Text="$0.00"
+                           TextAlignment="Right"/>
         </DockPanel>
 
         <DockPanel Grid.Row="4"
-                   Grid.Column="3"
-                   Margin="0 0 0 10">
+                           Grid.Column="3"
+                           Margin="0 0 0 10">
             <TextBlock Text="Tax: "
-                       Margin="0 0 15 0"/>
+                               Margin="0 0 15 0"/>
             <TextBlock x:Name="Tax"
-                   Text="$0.00"
-                   TextAlignment="Right"/>
+                           Text="$0.00"
+                           TextAlignment="Right"/>
         </DockPanel>
 
         <DockPanel Grid.Row="5"
-                   Grid.Column="3">
+                           Grid.Column="3">
             <TextBlock Text="Total: "/>
             <TextBlock x:Name="Total"
-                   Text="$0.00"
-                   TextAlignment="Right"/>
+                           Text="$0.00"
+                           TextAlignment="Right"/>
         </DockPanel>
 
         <Button x:Name="CheckOut" 
-                Grid.Row="6"
-                Grid.Column="2"
-                Content="Check Out"
-                Margin="0 20 0 0"
-                Padding="5"/>
-
+                        Grid.Row="6"
+                        Grid.Column="2"
+                        Content="Check Out"
+                        Margin="0 20 0 0"
+                        Padding="5"/>
     </Grid>
 </UserControl>

@@ -14,24 +14,26 @@ namespace TRMWPFUserInterface.ViewModels
 {
     public class SalesViewModel : Screen
     {
+        ISaleEndpoint _saleEndpoint;
         IProductEnpoint _productEnpoint;
         IConfigHelper _configHelper;
 
-        public SalesViewModel(IProductEnpoint productEnpoint, IConfigHelper configHelper)
+        public SalesViewModel(IProductEnpoint productEnpoint, IConfigHelper configHelper, ISaleEndpoint saleEndpoint)
         {
             _productEnpoint = productEnpoint;
             _configHelper = configHelper;
+            _saleEndpoint = saleEndpoint;
         }
 
         protected override async void OnViewLoaded(object view)
         {
             base.OnViewLoaded(view);
-            await LoadProducts();
+            await LoadProducts(); 
         }
 
         private async Task LoadProducts()
-        {
-            var productList = await _productEnpoint.GetAll();
+        {                                          //Etape 1
+            var productList = await _productEnpoint.GetAll(); 
             Products = new BindingList<ProductModel>(productList);
         }
 
@@ -182,6 +184,7 @@ namespace TRMWPFUserInterface.ViewModels
                 NotifyOfPropertyChange(() => SubTotal);
                 NotifyOfPropertyChange(() => Tax);
                 NotifyOfPropertyChange(() => Total);
+                NotifyOfPropertyChange(() => CanCheckOut);
             }
             catch (Exception ex)
             {
@@ -210,6 +213,7 @@ namespace TRMWPFUserInterface.ViewModels
                 NotifyOfPropertyChange(() => SubTotal);
                 NotifyOfPropertyChange(() => Tax);
                 NotifyOfPropertyChange(() => Total);
+                NotifyOfPropertyChange(() => CanCheckOut);
             }
             catch (Exception ex)
             {
@@ -225,6 +229,10 @@ namespace TRMWPFUserInterface.ViewModels
                 bool canCheckOut = false;
 
                 //Make sure is something in the cart
+                if (Cart.Count>0)
+                {
+                    canCheckOut = true; 
+                }
                 return canCheckOut;
             }
         }
@@ -233,11 +241,22 @@ namespace TRMWPFUserInterface.ViewModels
         {
             try
             {
+                //Create a SaleModel and post to the API
+                SaleModel sale = new SaleModel();
 
+                foreach (var item in Cart)
+                {
+                    sale.SaleDetails.Add(new SaleDetailModel
+                    {
+                        ProductId = item.Product.Id,
+                        Quantity = item.QuantityInCart
+                    });                    
+                }
+                await _saleEndpoint.PostSale(sale);
             }
             catch (Exception ex)
             {
-
+                
             }
 
         }

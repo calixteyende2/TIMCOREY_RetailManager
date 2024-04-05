@@ -12,8 +12,8 @@ namespace TRMWPFUserInterface.ViewModels
 {
     public class LoginViewModel : Screen
     {
-		private string _userName;
-        private string _password;
+		private string _userName = "calixteyende2010@gmail.com"; //Juste en dev
+        private string _password = "Sidney@2010"; //Juste en dev et non en prod
 		private IAPIHelper _apiHelper;
 		private IEventAggregator _eventAggregator;
 

@@ -16,8 +16,10 @@ namespace TRMDataManager.Controllers
     {
         // GET api/Product/GetAll
         [Route("GetAll")]
-        public IList<ProductModel> Get()
-        {
+        public IList<ProductModel> Get() 
+        {   
+            //Etape 3
+
             ProductDataAccess dataAccess = new ProductDataAccess();
 
             return dataAccess.GetProducts();
