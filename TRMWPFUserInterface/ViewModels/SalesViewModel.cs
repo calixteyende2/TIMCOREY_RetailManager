@@ -1,4 +1,5 @@
-﻿using Caliburn.Micro;
+﻿using AutoMapper;
+using Caliburn.Micro;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -9,6 +10,7 @@ using System.Windows.Documents;
 using TRMWPFUserInterface.Library.Api;
 using TRMWPFUserInterface.Library.Helpers;
 using TRMWPFUserInterface.Library.Models;
+using TRMWPFUserInterface.Models;
 
 namespace TRMWPFUserInterface.ViewModels
 {
@@ -17,12 +19,17 @@ namespace TRMWPFUserInterface.ViewModels
         ISaleEndpoint _saleEndpoint;
         IProductEnpoint _productEnpoint;
         IConfigHelper _configHelper;
+        IMapper _mapper;
 
-        public SalesViewModel(IProductEnpoint productEnpoint, IConfigHelper configHelper, ISaleEndpoint saleEndpoint)
+        public SalesViewModel(IProductEnpoint productEnpoint, 
+                              IConfigHelper configHelper, 
+                              ISaleEndpoint saleEndpoint,
+                              IMapper mapper)
         {
             _productEnpoint = productEnpoint;
             _configHelper = configHelper;
             _saleEndpoint = saleEndpoint;
+            _mapper = mapper;
         }
 
         protected override async void OnViewLoaded(object view)
@@ -33,12 +40,13 @@ namespace TRMWPFUserInterface.ViewModels
 
         private async Task LoadProducts()
         {                                          //Etape 1
-            var productList = await _productEnpoint.GetAll(); 
-            Products = new BindingList<ProductModel>(productList);
+            var productList = await _productEnpoint.GetAll();
+            var products = _mapper.Map<List<ProductDisplayModel>>(productList);
+            Products = new BindingList<ProductDisplayModel>(products);
         }
 
-        private BindingList<ProductModel> _products;
-        public BindingList<ProductModel> Products
+        private BindingList<ProductDisplayModel> _products;
+        public BindingList<ProductDisplayModel> Products
 		{
 			get { return _products; }
 			set 
@@ -48,8 +56,8 @@ namespace TRMWPFUserInterface.ViewModels
             }
 		}
 
-        private ProductModel _selectedProduct;
-        public ProductModel SelectedProduct
+        private ProductDisplayModel _selectedProduct;
+        public ProductDisplayModel SelectedProduct
         {
             get => _selectedProduct;
             set
@@ -60,8 +68,8 @@ namespace TRMWPFUserInterface.ViewModels
             }
         }
 
-        private BindingList<CartItemModel> _cart = new BindingList<CartItemModel>();
-        public BindingList<CartItemModel> Cart
+        private BindingList<CartItemDisplayModel> _cart = new BindingList<CartItemDisplayModel>();
+        public BindingList<CartItemDisplayModel> Cart
         {
             get { return _cart; }
             set 
@@ -163,16 +171,17 @@ namespace TRMWPFUserInterface.ViewModels
         {
             try
             {
-                CartItemModel existingItem = Cart.FirstOrDefault(X => X.Product == SelectedProduct);
+                CartItemDisplayModel existingItem = Cart.FirstOrDefault(X => X.Product == SelectedProduct);
                 if (existingItem != null)
                 {
                     existingItem.QuantityInCart += ItemQuantity;
-                    Cart.Remove(existingItem);
-                    Cart.Add(existingItem);
+                    //HACK There should be a better way of refreshing the cart display
+                    //Cart.Remove(existingItem); //Apres ajout de automap
+                    //Cart.Add(existingItem);    //Apres ajout de automap
                 }
                 else
                 {
-                    CartItemModel item = new CartItemModel()
+                    CartItemDisplayModel item = new CartItemDisplayModel()
                     {
                         Product = SelectedProduct,
                         QuantityInCart = ItemQuantity

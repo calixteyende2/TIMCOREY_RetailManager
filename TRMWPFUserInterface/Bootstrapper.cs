@@ -1,4 +1,5 @@
-﻿using Caliburn.Micro;
+﻿using AutoMapper;
+using Caliburn.Micro;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,8 @@ using TRMWPFUserInterface.Helpers;
 using TRMWPFUserInterface.Library;
 using TRMWPFUserInterface.Library.Api;
 using TRMWPFUserInterface.Library.Helpers;
+using TRMWPFUserInterface.Library.Models;
+using TRMWPFUserInterface.Models;
 using TRMWPFUserInterface.ViewModels;
 
 namespace TRMWPFUserInterface
@@ -28,6 +31,19 @@ namespace TRMWPFUserInterface
 
         }
 
+        private IMapper ConfigureAutoMapper()
+        {
+            var config = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ProductModel, ProductDisplayModel>();
+                cfg.CreateMap<CartItemModel, CartItemDisplayModel>();
+            });
+
+            var output = config.CreateMapper();
+
+            return output;
+        }
+
         protected override void OnStartup(object sender, StartupEventArgs e)
         {
             DisplayRootViewForAsync<ShellViewModel>();           
@@ -35,6 +51,8 @@ namespace TRMWPFUserInterface
 
         protected override void Configure()
         {
+            _container.Instance(ConfigureAutoMapper());
+
             _container.Instance(_container)
                       .PerRequest<IProductEnpoint, ProductEndpoint>()
                       .PerRequest<ISaleEndpoint, SaleEndpoint>();
