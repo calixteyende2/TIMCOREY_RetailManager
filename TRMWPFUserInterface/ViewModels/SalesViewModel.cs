@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Documents;
 using TRMWPFUserInterface.Library.Api;
 using TRMWPFUserInterface.Library.Helpers;
@@ -65,6 +66,18 @@ namespace TRMWPFUserInterface.ViewModels
                 _selectedProduct = value;
                 NotifyOfPropertyChange(() => SelectedProduct);
                 NotifyOfPropertyChange(() => CanAddToCart);
+            }
+        }
+
+        private CartItemDisplayModel _selectedCartItem;
+        public CartItemDisplayModel SelectedCartItem
+        {
+            get => _selectedCartItem;
+            set
+            {
+                _selectedCartItem = value;
+                NotifyOfPropertyChange(() => SelectedCartItem);
+                NotifyOfPropertyChange(() => CanRemoveFromCart);
             }
         }
 
@@ -209,6 +222,10 @@ namespace TRMWPFUserInterface.ViewModels
                 bool canRemoveFromCart = false;
 
                 //Make sure something is selected
+                if (SelectedCartItem != null && SelectedCartItem?.Product.QuantityInStock >0)
+                {
+                    canRemoveFromCart = true;
+                }
 
                 return canRemoveFromCart;
             }
@@ -218,6 +235,16 @@ namespace TRMWPFUserInterface.ViewModels
         {
             try
             {
+                SelectedCartItem.Product.QuantityInStock += 1;
+
+                if (SelectedCartItem.QuantityInCart > 1)
+                {
+                    SelectedCartItem.QuantityInCart -= 1;                    
+                }
+                else
+                {
+                    Cart.Remove(SelectedCartItem);
+                }
 
                 NotifyOfPropertyChange(() => SubTotal);
                 NotifyOfPropertyChange(() => Tax);
