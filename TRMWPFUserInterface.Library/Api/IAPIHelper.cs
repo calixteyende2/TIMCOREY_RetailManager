@@ -8,6 +8,7 @@ namespace TRMWPFUserInterface.Helpers
     {
         HttpClient APIClient { get; }
         Task<AuthenticatedUser> Authenticate(string username, string password);
+        void LogOffUser();
         Task GetLoggedInUserInfo(string token);
     }
 }

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TRMWPFUserInterface.EventModels;
+using TRMWPFUserInterface.Helpers;
 using TRMWPFUserInterface.Library;
 
 namespace TRMWPFUserInterface.ViewModels
@@ -15,14 +16,16 @@ namespace TRMWPFUserInterface.ViewModels
         private IEventAggregator _eventAggregator;
         private SalesViewModel _salesViewModel;
         private ILogInUserModel _logInUserModel;
+        private IAPIHelper _apiHelper;
 
         [Obsolete]
-        public ShellViewModel(IEventAggregator eventAggregator, SalesViewModel salesViewModel, ILogInUserModel logInUserModel)
+        public ShellViewModel(IEventAggregator eventAggregator, SalesViewModel salesViewModel, ILogInUserModel logInUserModel, IAPIHelper apiHelper)
         {
             _eventAggregator = eventAggregator;
             _eventAggregator.Subscribe(this);
             _salesViewModel = salesViewModel;
             _logInUserModel = logInUserModel;
+            _apiHelper = apiHelper;
             ActivateItemAsync(IoC.Get<LoginViewModel>());
         }
 
@@ -46,7 +49,8 @@ namespace TRMWPFUserInterface.ViewModels
 
         public async Task LogOut()
         {
-            _logInUserModel.LogOffUser();
+            _apiHelper.LogOffUser();
+            _logInUserModel.ResetUser();
             await ActivateItemAsync(IoC.Get<LoginViewModel>());
             NotifyOfPropertyChange(() => IsLoggedIn);
         }
