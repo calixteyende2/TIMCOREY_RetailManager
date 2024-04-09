@@ -44,7 +44,7 @@ namespace TRMWPFUserInterface.ViewModels
             }
 		}
 
-		private bool _isErrorVisible;
+
 
 		public bool IsErrorVisible
         {

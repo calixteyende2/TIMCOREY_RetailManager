@@ -69,6 +69,18 @@ namespace TRMWPFUserInterface.ViewModels
             }
         }
 
+        private async Task ResetSaleViewModel()
+        {
+            Cart = new BindingList<CartItemDisplayModel>();
+            //TODO - Add clearing the selectedCartItem if it does not do it itself
+            await LoadProducts();
+
+            NotifyOfPropertyChange(() => SubTotal);
+            NotifyOfPropertyChange(() => Tax);
+            NotifyOfPropertyChange(() => Total);
+            NotifyOfPropertyChange(() => CanCheckOut);
+        }
+
         private CartItemDisplayModel _selectedCartItem;
         public CartItemDisplayModel SelectedCartItem
         {
@@ -222,7 +234,7 @@ namespace TRMWPFUserInterface.ViewModels
                 bool canRemoveFromCart = false;
 
                 //Make sure something is selected
-                if (SelectedCartItem != null && SelectedCartItem?.Product.QuantityInStock >0)
+                if (SelectedCartItem != null && SelectedCartItem?.QuantityInCart > 0)
                 {
                     canRemoveFromCart = true;
                 }
@@ -250,6 +262,7 @@ namespace TRMWPFUserInterface.ViewModels
                 NotifyOfPropertyChange(() => Tax);
                 NotifyOfPropertyChange(() => Total);
                 NotifyOfPropertyChange(() => CanCheckOut);
+                NotifyOfPropertyChange(() => CanAddToCart);
             }
             catch (Exception ex)
             {
@@ -288,7 +301,10 @@ namespace TRMWPFUserInterface.ViewModels
                         Quantity = item.QuantityInCart
                     });                    
                 }
+
                 await _saleEndpoint.PostSale(sale);
+
+                await ResetSaleViewModel();
             }
             catch (Exception ex)
             {
